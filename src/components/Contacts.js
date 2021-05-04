@@ -29,26 +29,21 @@ class Contacts extends Component {
     });
   };
 
-  //add button for list on render
+  //add an actor
   handleAdd = () => {
-    // grab a random value from data
-    // add it to students
     let randomIndex = Math.floor(Math.random() * data.length);
     let elem = data[randomIndex];
 
-    // using the spread operator to grab all elemtents of students one by one and store it in the new array
-    // [...this.state.students]
     this.setState({
       contacts: [elem, ...this.state.contacts],
     });
   };
 
+  //delete an actor
   handleDelete = (someId) => {
     const { contacts } = this.state;
 
-    // keep all the elements that do not match the id
     let filteredContacts = contacts.filter((single) => {
-      // return is a condition on how to filter elements
       return single.id !== someId;
     });
 
