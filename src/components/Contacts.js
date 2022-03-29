@@ -7,13 +7,20 @@ function Contacts() {
   const [contacts, updateContacts] = useState(fiveContacts);
 
   const getRandomContact = () => {
+    //filter method to make sure there are no duplicates
+    //find method destructors the id from the contacts array, and compares it to the id of each element in the contactsJson
     let filtered = contactsJson.filter(
       (elem) => !contacts.find(({ id }) => elem.id === id)
     );
 
     let randomIndex = Math.floor(Math.random() * filtered.length);
     let randomContact = filtered[randomIndex];
-    randomContact && updateContacts([randomContact, ...contacts]);
+    //make sure there is an actual random contact before updating the state
+    // could also be randomContact && updateContacts([randomContact, ...contacts])
+    // ^ the && means only if both are true then update the contacts
+    if (randomContact) {
+      updateContacts([randomContact, ...contacts]);
+    }
   };
 
   const sortByName = () => {
