@@ -1,22 +1,46 @@
 import React from "react";
 
-//destructoring in the parameter
-function ContactDetail({ contact, onDelete }) {
-  const { pictureUrl, name, popularity, id } = contact;
-  console.log(name);
+function ContactDetails(props) {
+  console.log(props);
   return (
-    <div>
-      <img src={pictureUrl} height="50px" />
-      <h1>{name}</h1>
-      <h2>{popularity}</h2>
-      <button
-        onClick={() => {
-          onDelete(id);
-        }}
-      >
-        Delete
-      </button>
-    </div>
+    <tr>
+      <td>
+        <img
+          className="img-fluid img-thumbnail celebImg"
+          src={props.eachContact.pictureUrl}
+          alt="celebrity"
+        />
+      </td>
+      <td>{props.eachContact.name}</td>
+      <td>{props.eachContact.popularity.toFixed(2)}</td>
+      <td>
+        {props.eachContact.wonOscar === true ? (
+          <img
+            src={
+              "https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f3c6@2x.png"
+            }
+          />
+        ) : null}
+      </td>
+      <td>
+        {props.eachContact.wonEmmy === true ? (
+          <img
+            src={
+              "https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f3c6@2x.png"
+            }
+          />
+        ) : null}
+      </td>
+      <td>
+        <button
+          className="btn btn-secondary"
+          onClick={() => props.deleteContact(props.eachContact.id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
   );
 }
-export default ContactDetail;
+
+export default ContactDetails;

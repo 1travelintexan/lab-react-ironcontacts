@@ -1,74 +1,109 @@
-import React, { Component } from "react";
-import data from "../contacts.json";
-import ContactDetail from "./ActorDetail";
+import React, { useState } from "react";
+import "../App.css";
+import contactsJson from "../contacts.json";
 
-class Contacts extends Component {
-  state = {
-    contacts: data.slice(0, 5),
+function Contacts() {
+  let fiveContacts = contactsJson.slice(0, 5);
+  const [contacts, updateContacts] = useState(fiveContacts);
+
+  const getRandomContact = () => {
+    let filtered = contactsJson.filter(
+      (elem) => !contacts.find(({ id }) => elem.id === id)
+    );
+
+    let randomIndex = Math.floor(Math.random() * filtered.length);
+    let randomContact = filtered[randomIndex];
+    randomContact && updateContacts([randomContact, ...contacts]);
   };
 
-  //sorting the actors
-  handleSort = () => {
-    // when you use array methods that mutate/change the original array always deep clone it
-    const { contacts } = this.state;
-    let clonedContact = JSON.parse(JSON.stringify(contacts));
+  const sortByName = () => {
+    let contactsSortedByName = JSON.parse(JSON.stringify(contacts));
 
-    clonedContact.sort((a, b) => {
-      if (a.popularity > b.popularity) {
-        return -1;
-      } else if (a.popularity < b.popularity) {
+    contactsSortedByName.sort((a, b) => {
+      if (a.name > b.name) {
         return 1;
+      } else if (a.name < b.name) {
+        return -1;
       } else {
         return 0;
       }
     });
-
-    //update the original state after sort is done
-    this.setState({
-      contacts: clonedContact,
-    });
+    updateContacts(contactsSortedByName);
   };
 
-  //add an actor
-  handleAdd = () => {
-    let randomIndex = Math.floor(Math.random() * data.length);
-    let elem = data[randomIndex];
+  const sortByPopularity = () => {
+    let contactsSortedByPopularity = JSON.parse(JSON.stringify(contacts));
 
-    this.setState({
-      contacts: [elem, ...this.state.contacts],
-    });
+    contactsSortedByPopularity.sort((a, b) => b.popularity - a.popularity);
+
+    updateContacts(contactsSortedByPopularity);
   };
 
-  //delete an actor
-  handleDelete = (someId) => {
-    const { contacts } = this.state;
-
-    let filteredContacts = contacts.filter((single) => {
-      return single.id !== someId;
+  const removeContact = (id) => {
+    let filteredContacts = contacts.filter((contact) => {
+      return contact.id !== id;
     });
 
-    this.setState({
-      contacts: filteredContacts,
-    });
+    updateContacts(filteredContacts);
   };
-  render() {
-    const { contacts } = this.state;
-    return (
-      <div>
-        <button onClick={this.handleSort}>Sort by popularity</button>
-        <button onClick={this.handleAdd}>ADD</button>
-        {contacts.map((singleContact, index) => {
-          return (
-            <ContactDetail
-              key={index}
-              contact={singleContact}
-              onDelete={this.handleDelete}
-            />
-          );
-        })}
-      </div>
-    );
-  }
+
+  return (
+    <div>
+      <h1>Ironcontacts</h1>
+      <button onClick={getRandomContact}>Add Random Contact</button>
+      <button onClick={sortByName}>Sort by name</button>
+      <button onClick={sortByPopularity}>Sort by popularity</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Popularity</th>
+            <th>Won Oscar</th>
+            <th>Won Emmy</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contacts.map((contact, i) => {
+            return (
+              <tr key={`${contact.id}${i}`}>
+                <td>
+                  <img
+                    style={{ width: "56px" }}
+                    src={contact.pictureUrl}
+                    alt="contact"
+                  />
+                </td>
+                <td>{contact.name}</td>
+                <td>{contact.popularity}</td>
+                <td>
+                  {contact.wonOscar ? (
+                    <img
+                      src="https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f3c6@2x.png"
+                      alt="trophy"
+                    />
+                  ) : null}
+                </td>
+                <td>
+                  {contact.wonEmmy ? (
+                    <img
+                      src="https://a.slack-edge.com/production-standard-emoji-assets/13.0/apple-large/1f3c6@2x.png"
+                      alt="trophy"
+                    />
+                  ) : null}
+                </td>
+                <td>
+                  <button onClick={() => removeContact(contact.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default Contacts;
